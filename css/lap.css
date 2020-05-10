@@ -1,0 +1,50 @@
+#containt{
+	padding-top:5px;
+	width:1200px;
+	height:700px;
+	margin:auto;
+}
+#adv{
+	position:fixed;
+	bottom:0%;
+	left:27%;
+	transform:scale(0.6,0.6);
+}
+
+.tools{
+	width:30%;
+}
+.input{
+	width:40%;
+   height:100%;
+}
+.tools2{
+  width:30%;
+
+}
+.drag-n-drop{
+	height:100%;
+}
+.upload-section{
+	width:100%;
+}
+#custom div{			
+	justify-content:space-between;
+}
+.option{
+	display:none;
+}
+.option:first-child{
+	display:block;
+}
+
+#shortcut i:hover{
+        	background:green;
+        	font-size:35px;
+        	animation: f 0.75s infinite alternate;
+        }
+        @keyframes f{
+        	0%{background:none;color:black;font-size:35px;}
+        	50%{background:green;color:violet;font-size:35px;}
+        	80%{background:red;color:yellow;font-size:35px;}
+        }

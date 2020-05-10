@@ -1,0 +1,41 @@
+#containt{	
+	width:100%;	
+	margin:auto;
+}
+#adv{
+	position:sticky;
+	bottom:1%;	
+	margin:auto;
+}
+canvas{
+	max-width: 500px;
+	min-width:300px;
+	height:500px;
+}
+.tools{
+	max-width:250px;
+	min-width:150px;
+	order:1;
+}
+.tools2{
+	max-width:250px;
+	min-width:150px;
+	order:2;
+}
+#inp{
+	order:0;
+}
+#toolswrap{
+	max-width:500px;
+	margin:auto;
+}
+.input{
+	max-width:500px;
+}
+.option{
+	display:none;
+}
+.option:first-child{
+	display:block;
+}
+
