@@ -4,26 +4,39 @@
 }
 #adv{
 	position:sticky;
-	bottom:1%;	
-	margin:auto;
+	bottom:0px;
+	max-height:200px;	
+	overflow: auto;
+	width:500px;	
+    width:100vw;
+	z-index:20000;
 }
 canvas{
-	max-width: 500px;
-	min-width:300px;
-	height:500px;
+	max-width: 100vw;	
 }
-.tools{
-	max-width:250px;
-	min-width:150px;
+#filterContent img{
+	width:50vw;
+	height:20vh;
+}
+#tools{
+	width:100vw;
 	order:1;
+	display:flex;
+	visibility:hidden;	
+  	overflow:scroll;
 }
-.tools2{
-	max-width:250px;
-	min-width:150px;
+#tools2{
+	width:100vw;
 	order:2;
+	display:flex;
+	visibility:hidden;		
+    overflow:scroll;
 }
 #inp{
 	order:0;
+}
+#shortcut{
+	width:90vw;
 }
 #toolswrap{
 	max-width:500px;
@@ -32,6 +45,10 @@ canvas{
 .input{
 	max-width:500px;
 }
+#custom{
+	width:60vw;
+}
+
 .option{
 	display:none;
 }
