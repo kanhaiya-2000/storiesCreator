@@ -4,23 +4,29 @@
 	height:700px;
 	margin:auto;
 }
-#adv{
-	position:fixed;
-	bottom:0%;
-	left:27%;
-	transform:scale(0.6,0.6);
-}
 
+#filterContent img{
+	width:200px;
+	height:200px;
+}
 .tools{
-	width:30%;
+	width:30%;	
 }
 .input{
 	width:40%;
    height:100%;
 }
 .tools2{
-  width:30%;
-
+  width:30%;  
+}
+#adv{
+	position:sticky;
+	bottom:0px;
+	max-height:200px;	
+	overflow: auto;
+	width:500px;	
+	
+	z-index:20000;
 }
 .drag-n-drop{
 	height:100%;
@@ -37,7 +43,12 @@
 .option:first-child{
 	display:block;
 }
-
+#custom{
+	width:300px;
+}
+#shortcut{
+	width:360px;
+}
 #shortcut i:hover{
         	background:green;
         	font-size:35px;
