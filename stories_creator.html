@@ -34,7 +34,8 @@
          }
          body{
          background-image:url(images/b2.jpeg);
-         background-size:cover;
+         background-size:100% 100%;
+         background-attachment: fixed;
          background-repeat:no-repeat;
          animation:g 30s infinite ease-in-out;
          }        
@@ -45,7 +46,7 @@
          80%{background-image:url(sto4.jpeg);}
          100%{background-image:url(images/b2.jpeg);}
          }
-         .hidden,#adv{
+         #tools,#tools2,canvas,#adv{
          display:none;
          }
          #shortcut i{
@@ -61,7 +62,17 @@
          background-size:cover;
          background-color:yellow;
          overflow:scroll;
-         }         
+         } 
+         @media and(max-width:600px){
+            #shortcut{
+                width:90vw;
+            }
+            canvas{
+                width:100vw;
+                max-height:500px;
+                min-height:300px;
+            }
+         }        
 
       </style>
       <link rel="stylesheet" type="text/css" media="screen and (min-device-width: 600px)" href="css/lap.css">
@@ -109,7 +120,7 @@
                <label for="file-upload" class="custom-file-upload default" title='click to upload image/video' >
                <i class="fa fa-cloud-upload"></i> Image/video Upload<i class="fa fa-cloud-upload"></i>
                </label>
-               <canvas class='hidden'></canvas>
+               <canvas style='display:none'></canvas>
                <input id="file-upload" type="file" onchange='handleUpload(this)'/>
             </div>
             <div class='tools2 item hidden w3-animate-right' style='text-align:justify;padding-top:50px;' id="tools2">
@@ -215,9 +226,7 @@
    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
    <script type="text/javascript">
-      $('#brightness').text(100+'%');
-      if(screen.availWidth<1000)
-      $('#shortcut').css('width',screen.availWidth+'px');
+      $('#brightness').text(100+'%');           
       $('#shortcut').hide();
       $('#f1').val(100);
       $('#f2').val(100);
@@ -466,18 +475,28 @@
                     $('.input').css('padding-top','50px');
                         let canvas = document.getElementsByTagName('canvas')[0];
                     let ctx = canvas.getContext('2d');
-                    $('.hidden').show();
-                    if(x.matches){                                                                       
+                    $('canvas').show();
+                    $('#shortcut').show();
+                    if(x.matches){
+                        canvas.width = '100vw';                                                                       
                         document.getElementById('tools').style.display = 'flex';
-                        document.getElementById('tools2').style.display = 'flex';
-                        document.getElementById('tools').style.visibilty = 'visible';
-                        document.getElementById('tools2').style.visibilty = 'visible';
-                        canvas.height = auto;                
+                        document.getElementById('tools2').style.display = 'flex';                        
+                        canvas.height = '60vh';                
                     }
                     else{
-                        canvas.width = $('#inp').width();                        
-                        canvas.height = 500;                        
+                        $('#tools').show();
+                        $('#tools2').show();
                     }
+                    $(document).ready(function(){
+                    if(screen.availWidth<600){                        
+                        $('#tools').css('display','flex');
+                        $('#tools2').css('display','flex');
+                    }
+                    else{
+                        $('#tools').css('display','block');
+                        $('#tools2').css('display','block'); 
+                     }
+                 });
                     let image = new Image(canvas.width,canvas.height); 
                     image.onload = drawimage;
                     image.src = event.target.result ;
