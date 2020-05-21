@@ -1,549 +1,562 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<meta name='viewport' content="width=device-width,initial-scale=1.0">
-	<meta charset='utf-8'>
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-	<title>Simple and beautiful stories creator</title>
-	<style>
+   <head>
+      <meta name='viewport' content="width=device-width,initial-scale=1.0">
+      <meta charset='utf-8'>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+      <title>Simple and beautiful stories creator</title>
+      <style>
+         input[type="file"] {           
+         display:none;
+         }
+         .upload-section{
+         padding: 20px 30px;
+         }
+         .custom-file-upload {
+         border: 1px solid #ccc;
+         padding: 6px 20px;
+         cursor: pointer;           
+         font-size:0.9em;
+         width:200px;
+         text-align:center;
+         background: green;
+         color: yellow;
+         z-index:10;
+         }
+         .drag-n-drop{
+         width:100%;            
+         cursor: cell;
+         margin:auto;           
+         }         
+         canvas{
+         margin:auto;
+         background:white;
+         }
+         body{
+         background-image:url(images/b2.jpeg);
+         background-size:cover;
+         background-repeat:no-repeat;
+         animation:g 30s infinite ease-in-out;
+         }        
+         @keyframes g{
+         20%{background-image:url(sto1.jpeg);}
+         40%{background-image:url(sto2.jpg);}
+         60%{background-image:url(sto3.jpeg);}
+         80%{background-image:url(sto4.jpeg);}
+         100%{background-image:url(images/b2.jpeg);}
+         }
+         .hidden,#adv{
+         display:none;
+         }
+         #shortcut i{
+         cursor:pointer;            
+         background:none;
+         } 
+         #shortcut{
+         background:rgba(200,200,200,0.5);
+         z-index:100;         
+         }                
+         #adv{
+         margin:auto;           
+         background-size:cover;
+         background-color:yellow;
+         overflow:scroll;
+         }         
 
-		input[type="file"] {    		
-    		display:none;
-	}
-	    .upload-section{
-	    	padding: 20px 30px;
-	    }
-		.custom-file-upload {
-    		border: 1px solid #ccc;
-    		padding: 6px 20px;
-    		cursor: pointer;
-    		width:100%;
-    		font-size:1.3em;
-    		text-align:center;
-    		background: green;
-    		color: yellow;
-    		z-index:10;
-}
-        .drag-n-drop{
-        	width:100%;        	
-        	cursor: cell;
-        	margin:auto;        	
+      </style>
+      <link rel="stylesheet" type="text/css" media="screen and (min-device-width: 600px)" href="css/lap.css">
+      <link rel="stylesheet" type="text/css" href="https://www.w3schools.com/w3css/4/w3.css">
+      
+      <link rel="stylesheet" type="text/css" media="screen and (max-device-width: 600px)" href="css/small.css">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Tangerine">
+      
+   </head>
+   <body onload='checkCookie()'>
+      <div class="container mt-3">
+         <div id='shortcut' class='hidden w3-animate-zoom' style='display:flex;flex-wrap:nowrap;position:sticky;top:20px;margin:auto;justify-content: space-between;font-size:25px;'><i class='fa fa-plus ' title='advanced edit' onclick='if($("#adv").is(":hidden")){$("#adv").css("display","flex");this.className = "fa fa-times";$(this).attr("title","Close");}else{$("#adv").hide();this.className = "fa fa-plus";$(this).attr("title","Advanced edit");}'></i><i class='fa fa-download' title='download this photo' onclick='download()'></i><i class='fa fa-upload' title='upload-to-your-story' onclick=''></i><i class='fa fa-arrow-left' title='Quit'  onclick='reset()'></i></div>         
+         <div style='display:flex;flex-wrap:wrap;flex-direction:row;justify-content: space-around;' id="toolswrap" class="row h-80">
+            <div class='tools item hidden w3-animate-left' style='text-align:justify;padding-top:50px;' id="tools">
+               <div style='background:green;'>1.Brightness&nbsp;&nbsp;(<span id='brightness'></span>)&nbsp;<br>
+                  <input type='range' id='r1' min='0' max='200' value='100' onchange='updateFilters();$("#brightness").text(this.value+"%");'><br>
+               </div>
+               <div style='background:red;'>2.contrast&nbsp;&nbsp;(<span id='contrast'></span>)&nbsp;&nbsp;<br>
+                  <input type='range' id='r2' min='0' max='210' value='100' onchange='updateFilters();$("#contrast").text(this.value+"%");'><br>
+               </div>
+               <div style='background:green;'>3.saturate&nbsp;&nbsp;(<span id='saturate'></span>)&nbsp;&nbsp;<br>
+                  <input type='range' id='r3' min='0' max='300' value='100' onchange='updateFilters();$("#saturate").text(this.value+"%");'><br>
+               </div>
+               <div style='background:red;'>4.hue-rotate&nbsp;&nbsp;(<span id='hue-rotate'></span>)&nbsp;&nbsp;<br>
+                  <input type='range' id='r4' min='0' max='360' value='0' onchange='updateFilters();$("#hue-rotate").text(this.value+"deg");'><br>
+               </div>
+               <div style='background:green;'>5.sepia&nbsp;&nbsp;(<span id='sepia'></span>)&nbsp;&nbsp;<br>
+                  <input type='range' id='r5' min='0' max='200'  value='0' onchange='updateFilters();$("#sepia").text(this.value+"%");'><br>
+               </div>
+               <div style='background:red;'>6.opacity&nbsp;&nbsp;(<span id='opacity'></span>)&nbsp;&nbsp;<br>
+                  <input type='range' id='r6' min='0' max='100' value='100' onchange='updateFilters();$("#opacity").text(this.value+"%");'><br>
+               </div>
+               <div style='background:green;'>7.invert&nbsp;&nbsp;(<span id='invert'></span>)&nbsp;&nbsp;<br>
+                  <input type='range' id='r7' min='0' max='200' value='0' onchange='updateFilters();$("#invert").text(this.value+"%");'><br>
+               </div>
+               <div style='background:red;'>8.grayscale&nbsp;&nbsp;(<span id='grayscale'></span>)&nbsp;&nbsp;<br>
+                  <input type='range' id='r8' min='0' max='200' value='0' onchange='updateFilters();$("#grayscale").text(this.value+"%");'><br>
+               </div>
+               <div style='background:green;'>9.Blur&nbsp;&nbsp;(<span id='Blur'></span>)&nbsp;&nbsp;<br>
+                  <input type='range' id='r9' min='0' max='12' value='0' onchange='updateFilters();$("#Blur").text(this.value+"px");'><br>
+               </div>
+            </div>
+            <div class='input item w3-animate-zoom' id='inp'style='display:flex;align-content: center;flex-wrap:wrap;'>
+               <img class='drag-n-drop item default' title='you may upload using the upload button' src='images/icon.gif' style='margin:auto;'><br>
+               <label for="file-upload" class="custom-file-upload default" title='click to upload image/video' >
+               <i class="fa fa-cloud-upload"></i> Image/video Upload<i class="fa fa-cloud-upload"></i>
+               </label>
+               <canvas class='hidden'></canvas>
+               <input id="file-upload" type="file" onchange='handleUpload(this)'/>
+            </div>
+            <div class='tools2 item hidden w3-animate-right' style='text-align:justify;padding-top:50px;' id="tools2">
+               <div style='background:yellow;'>&nbsp;&nbsp;&nbsp;&nbsp;1.Adjust frame-size:<br></div>
+               <div style='background:violet;'>
+                  &nbsp;&nbsp;&nbsp;&nbsp;Width&nbsp;&nbsp;(<span id='width'></span>)&nbsp;&nbsp;<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;<input type='range' id='f1' min='0' max='100' onchange='scale();$("#width").text(this.value+"%");'><br>
+               </div>
+               <div style='background:purple;'>
+                  &nbsp;&nbsp;&nbsp;&nbsp;Height&nbsp;&nbsp;(<span id='height'></span>)&nbsp;&nbsp;<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;<input type='range' id='f2' min='0' max='100' onchange='scale();$("#height").text(this.value+"%");'><br>
+               </div>
+               <div style='background:yellow;'>
+                  &nbsp;&nbsp;&nbsp;&nbsp;2.Adjust position:<br>
+               </div>
+               <div style='background:violet;'>
+                  &nbsp;&nbsp;&nbsp;&nbsp;Left:&nbsp;&nbsp;(<span id='crop-l'></span>)&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;<input type='range' id='c1' min='0' max='100' value='0' onchange='crop();$("#crop-l").text(this.value+"%");'><br>
+               </div>
+               <div style='background: purple;'>
+                  &nbsp;&nbsp;&nbsp;&nbsp;Right:&nbsp;&nbsp;(<span id='crop-r'></span>)&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;<input type='range' id='c2' min='0' max='100' value='0' onchange='crop();$("#crop-r").text(this.value+"%");'><br>
+               </div>
+               <div style='background:violet;'>
+                  &nbsp;&nbsp;&nbsp;&nbsp;Top:&nbsp;&nbsp;(<span id='crop-t'></span>)&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;<input type='range' id='c3' min='0' max='100' value='0' onchange='crop();$("#crop-t").text(this.value+"%");'><br>
+               </div>
+               <div style='background:purple;'>
+                  &nbsp;&nbsp;&nbsp;&nbsp;Bottom:&nbsp;&nbsp;(<span id='crop-b'></span>)&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;<input type='range' id='c4' min='0' max='100' value='0' onchange='crop();$("#crop-b").text(this.value+"%");'><br>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div style="display:none;" id='adv'>
+            <div class='w3-animate-zoom w3-center w3-large'  style='display:flex;flex-wrap: nowrap;margin:auto;cursor:pointer;align-content:center;justify-content:space-around;'>
+               <div id='custom' class='w3-center w3-green '>
+                  1.Filter-name: <span id='filter-name' class='w3-yellow w3-xx-large' >Normal</span><br><br>
+                  <div style="display:flex;flex-wrap:nowrap;">
+                     <div onclick='moveSlide(-1)' class='w3-xlarge'>&#10094;</div>
+                     <div id='filterContent'>
+                        <div class='option w3-animate-zoom'><img style='border-radius: 50%;' src='images/b1.jpeg'></div>
+                        <div class='option w3-animate-zoom' style='display:none;'><img style='border-radius: 50%;filter:brightness(137%) contrast(101%) saturate(146%) grayscale(83%) hue-rotate(51deg);' src='images/b1.jpeg'></div>
+                        <div class='option w3-animate-zoom' style='display:none;'><img style='border-radius: 50%;filter:brightness(123%) contrast(117%);' src='images/b1.jpeg'></div>
+                        <div class='option w3-animate-zoom' style='display:none;'><img style='border-radius: 50%;filter:brightness(112%) contrast(101%) saturate(146%) grayscale(83%) hue-rotate(144deg) invert(6%) sepia(71%);' src='images/b1.jpeg'></div>
+                        <div class='option w3-animate-zoom' style='display:none;'><img style='border-radius: 50%;filter:brightness(127%) contrast(101%) saturate(142%) hue-rotate(38deg)' src='images/b1.jpeg'></div>
+                        <div class='option w3-animate-zoom' style='display:none;'><img style='border-radius: 50%;filter:brightness(105%) contrast(160%) saturate(288%) grayscale(65%) hue-rotate(30deg) sepia(19%)' src='images/b1.jpeg'></div>
+                        <div class='option w3-animate-zoom' style='display:none;'><img style='border-radius: 50%;filter:sepia(50%) hue-rotate(-30deg) saturate(140%)' src='images/b1.jpeg'></div>
+                        <div class='option w3-animate-zoom' style='display:none;'><img style='border-radius: 50%;filter:brightness(127%) contrast(117%) saturate(10%) grayscale(65%) hue-rotate(51deg)' src='images/b1.jpeg'></div>
+                        <div class='option w3-animate-zoom' style='display:none;'><img style='border-radius: 50%;filter:brightness(104%) contrast(203%) saturate(77%) invert(7%) sepia(46%)' src='images/b1.jpeg'></div>
+                        <div class='option w3-animate-zoom' style='display:none;'><img style='border-radius: 50%;filter:brightness(104%) contrast(159%) saturate(118%) grayscale(73%) hue-rotate(174deg) invert(15%) sepia(78%)' src='images/b1.jpeg'></div>
+                        <div class='option w3-animate-zoom' style='display:none;'><img style='border-radius: 50%;filter:brightness(77%) contrast(113%) saturate(239%) grayscale(22%) hue-rotate(9deg)' src='images/b1.jpeg'></div>
+                        <div class='option w3-animate-zoom' style='display:none;'><img style='border-radius: 50%;filter:sepia(.2) brightness(1.15) saturate(1.4)' src='images/b1.jpeg'></div>
+                        <div class='option w3-animate-zoom' style='display:none;'><img style='border-radius: 50%;filter:sepia(.35) contrast(1.1) brightness(1.2) saturate(1.3)' src='images/b1.jpeg'></div>
+                        <div class='option w3-animate-zoom' style='display:none;'><img style='border-radius: 50%;filter:sepia(.35) contrast(1.15) brightness(1.15) saturate(1.8)' src='images/b1.jpeg'></div>
+                        <div class='option w3-animate-zoom' style='display:none;'><img style='border-radius: 50%;filter:sepia(.45) contrast(1.25) brightness(1.75) saturate(1.3) hue-rotate(-5deg)' src='images/b1.jpeg'></div>
+                        <div class='option w3-animate-zoom' style='display:none;'><img style='border-radius: 50%;filter:contrast(1.1) brightness(1.25) saturate(1.1)' src='images/b1.jpeg'></div>
+                        <div class='option w3-animate-zoom' style='display:none;'><img style='border-radius: 50%;filter:sepia(.35) contrast(1.05) brightness(1.05) saturate(1.75)' src='images/b1.jpeg'></div>
+                        <div class='option w3-animate-zoom' style='display:none;'><img style='border-radius: 50%;filter:sepia(.4) contrast(1.5) brightness(1.2) saturate(1.4) hue-rotate(-10deg)' src='images/b1.jpeg'></div>
+                        <div class='option w3-animate-zoom' style='display:none;'><img style='border-radius: 50%;filter:sepia(.5) contrast(1.25) brightness(1.15) saturate(.9) hue-rotate(-2deg)' src='images/b1.jpeg'></div>
+                        <div class='option w3-animate-zoom' style='display:none;'><img style='border-radius: 50%;filter:sepia(.35) saturate(1.1) contrast(1.5)' src='images/b1.jpeg'></div>
+                     </div>
+                     <div onclick='moveSlide(1)' class='w3-xlarge' style='cursor:pointer;'>&#10095;</div>
+                  </div>
+                  <br>          
+                  <div id='addbg' style="display:flex;flex-wrap:nowrap;">
+                     <label for="bg-upload" class="custom-file-upload" title='click to upload image' >
+                     <i class="fa fa-cloud-upload"></i>Upload background<i class="fa fa-cloud-upload"></i>
+                     </label><i class='w3-btn w3-red w3-circle fa fa-close' onclick='removeBg()' title='Remove background'></i>
+                     <input id="bg-upload" type="file" onchange='Addbg(this)'/>
+                  </div>                 
+               </div>
+               <div class='w3-center w3-green' style="width:50%">
+                  2.Background-filter<br>
+                  <div style="text-align:justify;">
+                     <div style='background:green;'>1.Brightness&nbsp;&nbsp;(<span id='brightness-b'></span>)&nbsp;<br>
+                        <input type='range' id='rb1' min='0' max='200' value='100' onchange='updateBFilters();$("#brightness-b").text(this.value+"%");'><br>
+                     </div>
+                     <div style='background:red;'>2.contrast&nbsp;&nbsp;(<span id='contrast-b'></span>)&nbsp;&nbsp;<br>
+                        <input type='range' id='rb2' min='0' max='210' value='100' onchange='updateBFilters();$("#contrast").text(this.value+"%");'><br>
+                     </div>
+                     <div style='background:green;'>3.saturate&nbsp;&nbsp;(<span id='saturate-b'></span>)&nbsp;&nbsp;<br>
+                        <input type='range' id='rb3' min='0' max='300' value='100' onchange='updateBFilters();$("#saturate-b").text(this.value+"%");'><br>
+                     </div>
+                     <div style='background:red;'>4.hue-rotate&nbsp;&nbsp;(<span id='hue-rotate-b'></span>)&nbsp;&nbsp;<br>
+                        <input type='range' id='rb4' min='0' max='360' value='0' onchange='updateBFilters();$("#hue-rotate-b").text(this.value+"deg");'><br>
+                     </div>
+                     <div style='background:green;'>5.sepia&nbsp;&nbsp;(<span id='sepia-b'></span>)&nbsp;&nbsp;<br>
+                        <input type='range' id='rb5' min='0' max='200'  value='0' onchange='updateBFilters();$("#sepia-b").text(this.value+"%");'><br>
+                     </div>
+                     <div style='background:green;'>6.invert&nbsp;&nbsp;(<span id='invert-b'></span>)&nbsp;&nbsp;<br>
+                        <input type='range' id='rb6' min='0' max='200' value='0' onchange='updateBFilters();$("#invert-b").text(this.value+"%");'><br>
+                     </div>
+                     <div style='background:red;'>7.grayscale&nbsp;&nbsp;(<span id='grayscale-b'></span>)&nbsp;&nbsp;<br>
+                        <input type='range' id='rb7' min='0' max='200' value='0' onchange='updateBFilters();$("#grayscale-b").text(this.value+"%");'><br>
+                     </div>
+                     <div style='background:green;'>8.Blur&nbsp;&nbsp;(<span id='Blur-b'></span>)&nbsp;&nbsp;<br>
+                        <input type='range' id='rb8' min='0' max='12' value='0' onchange='updateBFilters();$("#Blur-b").text(this.value+"px");'><br>
+                     </div>
+                     <span style="color:green" class="w3-yellow"><b>Tips:-</b>Change opacity value<br> of original photo</span>
+                  </div>
+               </div>
+            </div>
+         </div>
+      <audio autoplay loop src="fav.mp3"></audio>
+   </body>
+   <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+   <script type="text/javascript">
+      $('#brightness').text(100+'%');
+      if(screen.availWidth<1000)
+      $('#shortcut').css('width',screen.availWidth+'px');
+      $('#shortcut').hide();
+      $('#f1').val(100);
+      $('#f2').val(100);
+      $('#width').text(100+'%');
+      $('#height').text(100+'%');
+      $('#crop-r').text(0+'%');
+      $('#crop-t').text(0+'%');
+      $('#crop-l').text(0+'%');
+      $('#crop-b').text(0+'%');
+      $('#c1').val(0);
+      $('#c2').val(0);
+      $('#c3').val(0);
+      $('#c4').val(0);
+      $('#r1').val(100);
+      $('#contrast').text(100+'%');
+      $('#r2').val(100);
+      $('#saturate').text(100+'%');
+      $('#r3').val(100);
+      $('#hue-rotate').text(0+'deg');
+      $('#r4').val(0);
+      $('#sepia').text(0+'%');
+      $('#r5').val(0);
+      $('#opacity').text(100+'%');
+      $('#r6').val(100);
+      $('#invert').text(0+'%');
+      $('#r7').val(0);
+      $('#grayscale').text(0+'%');
+      $('#r8').val(0);
+      $('#Blur').text(0+'px');
+      $('#r9').val(0);
+      $('#brightness-b').text(100+'%');
+        $('#rb1').val(100);
+      $('#contrast-b').text(100+'%');
+      $('#rb2').val(100);
+      $('#saturate-b').text(100+'%');
+      $('#rb3').val(100);
+      $('#hue-rotate-b').text(0+'deg');
+      $('#rb4').val(0);
+      $('#sepia-b').text(0+'%');
+      $('#rb5').val(0);             
+      $('#invert-b').text(0+'%');
+      $('#rb6').val(0);      
+      $('#grayscale-b').text(0+'%');
+      $('#rb7').val(0);
+      $('#Blur-b').text(0+'px');
+      $('#rb8').val(0);
+      window.addEventListener('resize',function(){
+        if(screen.availWidth<600){
+            $('#tools').css('display','flex');
+            $('#tools2').css('display','flex');
         }
-        canvas{
-        	margin:auto;
-        	background:white;
+        else{
+           $('#tools').css('display','block');
+            $('#tools2').css('display','block'); 
         }
-        body{
-        	background-image:url(images/b2.jpeg);
-        	background-size:cover;
-        	background-repeat:no-repeat;
-        	animation:g 30s infinite ease-in-out;
-        }        
-        @keyframes g{
-        	20%{background-image:url(sto1.jpeg);}
-        	40%{background-image:url(sto2.jpg);}
-        	60%{background-image:url(sto3.jpeg);}
-        	80%{background-image:url(sto4.jpeg);}
-        	100%{background-image:url(images/b2.jpeg);}
+      })
+      function checkCookie(){
+      
+      }
+      $('label').css('width',($('.drag-n-drop').width()+20)+'px');
+      function removeBackground(){}
+        var file=null,file2=null ;
+        var w,h;
+        var l=0,r=0,t=0,b=0;
+        var slide_index = 0;
+        var option2 = document.querySelectorAll('#filterContent div');
+        function moveSlide(e){
+                var effects = ['Normal','cool B&W','bright','Normal B&W','Summer','clear','21s hero','1900s hero','unique','villian','labour','Aden','Amaro','Junotic','pro','perpetua','maven','hefe','crema','patch'];
+                var filters = ['brightness(100%) contrast(100%) saturate(100%) grayscale(0%) hue-rotate(0deg) sepia(0) invert(0%)',
+                'brightness(137%) contrast(101%) saturate(146%) grayscale(83%) hue-rotate(51deg)',
+                'brightness(123%) contrast(117%)',
+                'brightness(112%) contrast(101%) saturate(146%) grayscale(83%) hue-rotate(144deg) invert(6%) sepia(71%)',
+                'brightness(127%) contrast(101%) saturate(142%) hue-rotate(38deg)',
+                'brightness(105%) contrast(160%) saturate(288%) grayscale(65%) hue-rotate(30deg) sepia(19%)',
+                'sepia(50%) hue-rotate(330deg) saturate(140%)',
+                'brightness(127%) contrast(117%) saturate(10%) grayscale(65%) hue-rotate(51deg)',
+                'brightness(104%) contrast(203%) saturate(77%) invert(7%) sepia(46%)',
+                'brightness(104%) contrast(159%) saturate(118%) grayscale(73%) hue-rotate(174deg) invert(15%) sepia(78%)',
+                'brightness(77%) contrast(113%) saturate(239%) grayscale(22%) hue-rotate(9deg)',
+                'sepia(20%) brightness(115%) saturate(140%)',
+                'sepia(35%) contrast(110%) brightness(120%) saturate(130%)',
+                'sepia(35%) contrast(115%) brightness(115%) saturate(180%)',
+                'sepia(45%) contrast(125%) brightness(175%) saturate(130%) hue-rotate(355deg)',
+                'contrast(110%) brightness(125%) saturate(110%)',
+                'sepia(35%) contrast(105%) brightness(105%) saturate(175%)',
+                'sepia(40%) contrast(150%) brightness(120%) saturate(140%) hue-rotate(350deg)',
+                'sepia(50%) contrast(125%) brightness(115%) saturate(90%) hue-rotate(358deg)',
+                'sepia(35%) saturate(110%) contrast(150%)']; 
+                for(x of option2)
+                    x.style.display='none';  
+                if(e==-1&&slide_index==0)
+                        slide_index = (option2.length -1)
+                else if(e==-1)
+                    slide_index--;
+                if(e==1&&slide_index==option2.length-1)
+                    slide_index = 0;
+                else if(e==1)
+                    slide_index = slide_index + 1;
+                $("#filter-name").text(effects[slide_index]);
+                option2[slide_index].style.display='block';
+                let data = filters[slide_index];
+                ApplyFilters(data);
+                let f = filters[slide_index].split(' ');
+                let i1=100,i2=100,i3=0,i4=0,i5=$('#r6').val(),i6=0,i7=0,i8=100,i9=0; 
+                f.forEach(function(item){if(item.includes('brightness(')){i1 = item.match(/(\d+)/);i1 = Number(i1[0]);}if(item.includes('contrast(')){i2 = item.match(/(\d+)/);i2 = Number(i2[0]);}if(item.includes('sepia(')){i3 = item.match(/(\d+)/);i3 = Number(i3[0]);}if(item.includes('grayscale(')){i4 = item.match(/(\d+)/);i4 = Number(i4[0]);}if(item.includes('opacity(')){i5 = item.match(/(\d+)/);i5 = Number(i5[0]);}if(item.includes('hue-rotate(')){i6 = item.match(/(\d+)/);i6 = Number(i6[0]);}if(item.includes('invert(')){i7 = item.match(/(\d+)/);i7 = Number(i7[0]);}if(item.includes('saturate(')){i8 = item.match(/(\d+)/);i8 = Number(i8[0]);}if(item.includes('blur(')){i9 = item.match(/(\d+)/);i9 = Number(i9[0]);}});
+                    $('#brightness').text(i1+'%');
+                    $('#r1').val(i1);
+                $('#contrast').text(i2+'%');
+                $('#r2').val(i2);
+                $('#saturate').text(i8+'%');
+                $('#r3').val(i8);
+                $('#hue-rotate').text(i6+'deg');
+                $('#r4').val(i6);
+                $('#sepia').text(i3+'%');
+                $('#r5').val(i3);
+                $('#opacity').text(i5+'%');
+                $('#r6').val(i5);
+                $('#invert').text(i7+'%');
+                $('#r7').val(i7);
+                $('#grayscale').text(i4+'%');
+                $('#r8').val(i4);
+                $('#Blur').text(i9+'px');
+                $('#r9').val(i9);               
+      
+      }
+      let canvas = document.getElementsByTagName('canvas')[0];
+         let ctx = canvas.getContext('2d');
+         let prev_filter ="brightness(100%) contrast(100%) saturate(100%) grayscale(0%) hue-rotate(0deg) sepia(0) invert(0%)";
+         let bgfilter ='opacity(1)';
+      function ApplyFilters(data){
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            r = $('#c2').val()*canvas.width/100;
+                l = $('#c1').val()*canvas.width/100;
+                t = $('#c3').val()*canvas.height/100;
+                b = $('#c4').val()*canvas.height/100;
+                let bg = new Image(w,h);
+                bg.onload = function(){
+                    ctx.filter = bgfilter;
+                    ctx.drawImage(this,0,0,w,h);
+                }
+                bg.src = file2;
+            let image = new Image(w,h); 
+            image.onload = drawimage;
+            image.src = file;
+            function drawimage(){
+                ctx.filter = data+" opacity("+$('#r6').val()+"%)";
+                prev_filter = data+" opacity("+$('#r6').val()+"%)";
+                    ctx.drawImage(this, -l, -t, canvas.width+l+r, canvas.height+t+b);
+                }           
+      }
+      function cb(e){
+        file2 = e.src;
+        ApplyFilters(prev_filter);                              
+        $('#r6').val(50);
+        $('#opacity').text(50+'%');
+      }
+      function scale(){
+               ctx.clearRect(0,0,canvas.width,canvas.height);
+               canvas.width = w*$('#f1').val()/100;
+               canvas.height = h*$('#f2').val()/100;
+               r = $('#c2').val()*canvas.width/100;
+               l = $('#c1').val()*canvas.width/100;
+               t = $('#c3').val()*canvas.height/100;
+               b = $('#c4').val()*canvas.height/100;
+               let bg = new Image(w,h);
+                bg.onload = function(){
+                    ctx.filter = bgfilter;
+                    ctx.drawImage(this,0,0,w,h);
+                }
+                bg.src = file2;
+               let image = new Image(w,h);          
+               image.onload = drawimage;
+               image.src = file;
+               function drawimage(){
+                ctx.filter = prev_filter+ ' opacity('+$('#r6').val()+'%)';
+                ctx.drawImage(image, -l, -t, canvas.width+l+r, canvas.height+t+b);
+                }
+      }
+      function removeBg(){
+        file2 = null;       
+        $('#r6').val(100);
+        $('#opacity').text(100+'%');
+        ApplyFilters(prev_filter);
+      } 
+         function crop(){
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+               canvas.width = w*$('#f1').val()/100;
+               canvas.height = h*$('#f2').val()/100;
+               r = $('#c2').val()*canvas.width/100;
+               l = $('#c1').val()*canvas.width/100;
+               t = $('#c3').val()*canvas.height/100;
+               b = $('#c4').val()*canvas.height/100;
+               let bg = new Image(w,h);
+                bg.onload = function(){
+                    ctx.filter = 'opacity(1)';
+                    ctx.drawImage(this,0,0,w,h);
+                }
+                bg.src = file2;
+               let image = new Image(w,h);          
+               image.onload = drawimage;
+               image.src = file;
+               function drawimage(){
+                ctx.filter = prev_filter + ' opacity('+$('#r6').val()+'%)';
+                ctx.drawImage(image, -l, -t, canvas.width+l+r, canvas.height+t+b);
+                }
+      }
+      
+      function updateFilters(){
+        var dat = "brightness("+$('#r1').val()/100+') contrast('+$('#r2').val()/100+') saturate('+$('#r3').val()/100+') hue-rotate('+$('#r4').val()+'deg) sepia('+$('#r5').val()/100+') opacity('+$('#r6').val()/100+') invert('+$('#r7').val()/100+') grayscale('+$('#r8').val()/100+') blur('+$('#r9').val()+'px)';
+           ApplyFilters(dat);
+      }
+      function updateBFilters(){
+        if(file2){
+         bgfilter = "brightness("+$('#rb1').val()/100+') contrast('+$('#rb2').val()/100+') saturate('+$('#rb3').val()/100+') hue-rotate('+$('#rb4').val()+'deg) sepia('+$('#rb5').val()/100+') invert('+$('#rb6').val()/100+') grayscale('+$('#rb7').val()/100+') blur('+$('#rb8').val()+'px)';
+         ctx.clearRect(0,0,canvas.width,canvas.height);
+            r = $('#c2').val()*canvas.width/100;
+                l = $('#c1').val()*canvas.width/100;
+                t = $('#c3').val()*canvas.height/100;
+                b = $('#c4').val()*canvas.height/100;
+                let bg = new Image(w,h);
+                bg.onload = function(){
+                    ctx.filter = bgfilter;
+                    ctx.drawImage(this,0,0,w,h);
+                }
+                bg.src = file2;
+            let image = new Image(w,h); 
+            image.onload = drawimage;
+            image.src = file;
+            function drawimage(){
+                ctx.filter = prev_filter+" opacity("+$('#r6').val()+"%)";               
+                    ctx.drawImage(this, -l, -t, canvas.width+l+r, canvas.height+t+b);
+                }
+            }
+      }
+      function handleUpload(e){
+         let x = window.matchMedia('max-width:600px');
+         document.getElementsByTagName('audio')[0].play();
+            let fReader = new FileReader();
+         fReader.readAsDataURL(e.files[0]);
+         fReader.onloadend = function(event){
+                   let ratX,ratY;
+               let s = (event.target.result.split(';')[0]).split('/');
+                let ext = s[s.length-1].toLowerCase();
+                if(ext=='jpg'||ext=='jpeg'||ext=='png'){
+                    $('.default').hide();                                        
+                    $('.input').css('padding-top','50px');
+                        let canvas = document.getElementsByTagName('canvas')[0];
+                    let ctx = canvas.getContext('2d');
+                    $('.hidden').show();
+                    if(x.matches){                                                                       
+                        document.getElementById('tools').style.display = 'flex';
+                        document.getElementById('tools2').style.display = 'flex';
+                        document.getElementById('tools').style.visibilty = 'visible';
+                        document.getElementById('tools2').style.visibilty = 'visible';
+                        canvas.height = auto;                
+                    }
+                    else{
+                        canvas.width = $('#inp').width();                        
+                        canvas.height = 500;                        
+                    }
+                    let image = new Image(canvas.width,canvas.height); 
+                    image.onload = drawimage;
+                    image.src = event.target.result ;
+                         file = event.target.result;
+                function drawimage() {                  
+                    w = canvas.width;
+                    h = canvas.height;
+                    ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+                }
+                
+            }
+                else if(ext=='gif'||ext=='webp'){
+                    $('.default').hide();
+                    let img = document.createElement('img');
+                    img.src = event.target.result;
+                    let w = (x.matches)?(screen.availWidth):500;
+                     let h = (x.matches)?400:500;                
+                    $('.input').append(img).css('width',w+'px').css('height',h+'px').css('display','flex').css('align-content','center');
+                }
+                else if(ext=='mp4'||ext=='m4v'||ext=='avi'||ext=='mpg'||ext=='webm'){
+                     $('.default').hide();
+                     var video = document.createElement('video');
+                     video.autoplay = true;
+                    // video.loop = true;
+                     video.controls = true;
+                     video.setAttribute('src',event.target.result);
+                     let w = (x.matches)?(screen.availWidth):500;
+                      let h = (x.matches)?450:500;
+                      $('.input').append(video).css('width',w+'px').css('height',h+'px').css('display','flex').css('align-content','center');
+                      $('.input').css('padding-top','200px');
+                }
+                else{
+                    alert("invalid file-type!");
+                }       
+         }
+      }
+      function download(){
+      var a = document.createElement('a');
+      document.body.appendChild(a);
+      a.href = canvas.toDataURL('image/png');
+      a.download = 'image.png';
+      a.click();
+      } 
+      function reset(){
+      if(confirm('Are you sure to leave?'))
+      window.location.reload();
+      }
+      function Addbg(e){
+      let fread = new FileReader();
+      fread.readAsDataURL(e.files[0]);
+      fread.onloadend = function(ev){
+        let s = (ev.target.result.split(';')[0]).split('/');
+        s= s[s.length-1].toLowerCase();
+        if(s=='jpg'||s=='jpeg'||s=='png'||s=='gif'){
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            r = $('#c2').val()*canvas.width/100;
+                l = $('#c1').val()*canvas.width/100;
+                t = $('#c3').val()*canvas.height/100;
+                b = $('#c4').val()*canvas.height/100;
+            let image = new Image(w,h); 
+            image.onload = drawImage;
+            image.src = ev.target.result ;          
+            let Im2 = new Image(w,h);
+            Im2.onload = function(){                            
+                ctx.filter = prev_filter + ' opacity(0.5)';                         
+                $('#r6').val(50);
+                $('#opacity').text(50+'%');
+                ctx.drawImage(this,-l,-r,canvas.width+l+r,canvas.height+l+r);
+            }
+            Im2.src = file;
+            function drawImage(){
+                ctx.filter = bgfilter;
+                ctx.drawImage(this,0,0,w,h);
+                file2 = ev.target.result;
+            }
         }
-        .hidden,#adv{
-        	display:none;
-        }
-        #shortcut i{
-        	cursor:pointer;        	
-        	background:none;
-        } 
-        #shortcut{
-        	background:rgba(200,200,200,0.5);
-        }       
-        #adv{
-        	margin:auto;        	
-        	background-size:100% 100%;
-        	background-color:yellow;
-        	overflow:scroll;
-        	height:200px;
-        }
-	</style>
-	<link rel="stylesheet" type="text/css" media="screen and (min-device-width: 1000px)" href="css/lap.css">
-	<link rel="stylesheet" type="text/css" href="https://www.w3schools.com/w3css/4/w3.css">
-	<link rel="stylesheet" type="text/css" media="screen and (min-device-width: 500px) and (max-device-width: 1000px)" href="css/Tablet.css">
-	<link rel="stylesheet" type="text/css" media="screen and (max-device-width: 500px)" href="css/small.css">	
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Tangerine">
-
-
-</head>
-<body onload='checkCookie()'>
-	<div id="containt">
-	<div id='shortcut' class='hidden w3-animate-zoom' style='display:flex;flex-wrap:nowrap;position:sticky;top:20px;margin:auto;width:360px;justify-content: space-between;font-size:25px;'><i class='fa fa-plus ' title='advanced edit' onclick='if($("#adv").is(":hidden")){$("#adv").css("display","flex");this.className = "fa fa-times";$(this).attr("title","Close");}else{$("#adv").hide();this.className = "fa fa-plus";$(this).attr("title","Advanced edit");}'></i><i class='fa fa-download' title='download this photo' onclick='download()'></i><i class='fa fa-upload' title='upload-to-your-story' onclick=''></i><i class='fa fa-arrow-left' title='Quit'  onclick='reset()'></i></div>
-	 <div class='w3-animate-zoom w3-center w3-large' id='adv' style='display:none;flex-wrap: nowrap;cursor:pointer;align-content:center;justify-content:space-around;'>
-    	<div id='custom' class='w3-center w3-green '>    		
-    		1.Filter-name: <span id='filter-name' class='w3-yellow w3-xx-large' >Normal</span><br><br>
-    		<div style="display:flex;flex-wrap:nowrap;">
-    		<div onclick='moveSlide(-1)' class='w3-xlarge'>&#10094;</div>
-    		<div id='filterContent'>
-    		<div class='option w3-animate-zoom'><img style='border-radius: 50%;' src='images/b1.jpeg'></div>
-    		<div class='option w3-animate-zoom' style='display:none;'><img style='border-radius: 50%;filter:brightness(137%) contrast(101%) saturate(146%) grayscale(83%) hue-rotate(51deg);' src='images/b1.jpeg'></div>
-    		<div class='option w3-animate-zoom' style='display:none;'><img style='border-radius: 50%;filter:brightness(123%) contrast(117%);' src='images/b1.jpeg'></div>
-    		<div class='option w3-animate-zoom' style='display:none;'><img style='border-radius: 50%;filter:brightness(112%) contrast(101%) saturate(146%) grayscale(83%) hue-rotate(144deg) invert(6%) sepia(71%);' src='images/b1.jpeg'></div>
-    		<div class='option w3-animate-zoom' style='display:none;'><img style='border-radius: 50%;filter:brightness(127%) contrast(101%) saturate(142%) hue-rotate(38deg)' src='images/b1.jpeg'></div>
-    		<div class='option w3-animate-zoom' style='display:none;'><img style='border-radius: 50%;filter:brightness(105%) contrast(160%) saturate(288%) grayscale(65%) hue-rotate(30deg) sepia(19%)' src='images/b1.jpeg'></div>
-    		<div class='option w3-animate-zoom' style='display:none;'><img style='border-radius: 50%;filter:sepia(50%) hue-rotate(-30deg) saturate(140%)' src='images/b1.jpeg'></div>
-    		<div class='option w3-animate-zoom' style='display:none;'><img style='border-radius: 50%;filter:brightness(127%) contrast(117%) saturate(10%) grayscale(65%) hue-rotate(51deg)' src='images/b1.jpeg'></div>
-    		<div class='option w3-animate-zoom' style='display:none;'><img style='border-radius: 50%;filter:brightness(104%) contrast(203%) saturate(77%) invert(7%) sepia(46%)' src='images/b1.jpeg'></div>
-    		<div class='option w3-animate-zoom' style='display:none;'><img style='border-radius: 50%;filter:brightness(104%) contrast(159%) saturate(118%) grayscale(73%) hue-rotate(174deg) invert(15%) sepia(78%)' src='images/b1.jpeg'></div>
-    		<div class='option w3-animate-zoom' style='display:none;'><img style='border-radius: 50%;filter:brightness(77%) contrast(113%) saturate(239%) grayscale(22%) hue-rotate(9deg)' src='images/b1.jpeg'></div>
-    		<div class='option w3-animate-zoom' style='display:none;'><img style='border-radius: 50%;filter:sepia(.2) brightness(1.15) saturate(1.4)' src='images/b1.jpeg'></div>
-    		<div class='option w3-animate-zoom' style='display:none;'><img style='border-radius: 50%;filter:sepia(.35) contrast(1.1) brightness(1.2) saturate(1.3)' src='images/b1.jpeg'></div>
-    		<div class='option w3-animate-zoom' style='display:none;'><img style='border-radius: 50%;filter:sepia(.35) contrast(1.15) brightness(1.15) saturate(1.8)' src='images/b1.jpeg'></div>
-    		<div class='option w3-animate-zoom' style='display:none;'><img style='border-radius: 50%;filter:sepia(.45) contrast(1.25) brightness(1.75) saturate(1.3) hue-rotate(-5deg)' src='images/b1.jpeg'></div>
-    		<div class='option w3-animate-zoom' style='display:none;'><img style='border-radius: 50%;filter:contrast(1.1) brightness(1.25) saturate(1.1)' src='images/b1.jpeg'></div>
-    		<div class='option w3-animate-zoom' style='display:none;'><img style='border-radius: 50%;filter:sepia(.35) contrast(1.05) brightness(1.05) saturate(1.75)' src='images/b1.jpeg'></div>
-    		<div class='option w3-animate-zoom' style='display:none;'><img style='border-radius: 50%;filter:sepia(.4) contrast(1.5) brightness(1.2) saturate(1.4) hue-rotate(-10deg)' src='images/b1.jpeg'></div>
-    		<div class='option w3-animate-zoom' style='display:none;'><img style='border-radius: 50%;filter:sepia(.5) contrast(1.25) brightness(1.15) saturate(.9) hue-rotate(-2deg)' src='images/b1.jpeg'></div>
-    		<div class='option w3-animate-zoom' style='display:none;'><img style='border-radius: 50%;filter:sepia(.35) saturate(1.1) contrast(1.5)' src='images/b1.jpeg'></div> </div>
-    	<div onclick='moveSlide(1)' class='w3-xlarge' style='cursor:pointer;'>&#10095;</div>
-    </div><br>    		
-    		<div id='addbg'>
-    		<label for="bg-upload" class="custom-file-upload" title='click to upload image' >
-    		<i class="fa fa-cloud-upload"></i>Upload background<i class="fa fa-cloud-upload"></i>
-    		</label><i class='w3-btn w3-red w3-circle fa fa-close' onclick='removeBg()' title='Remove background'></i>
-    		<input id="bg-upload" type="file" onchange='Addbg(this)'/></div><br><span style="font-size:0.8em;font-weight:bold;" class="w3-yellow">Background-option</span><br><span class="w3-large w3-text-red">This may create security issue<br>Browser will not allow <b>direct</b> download</span><div style="display:flex;flex-wrap:wrap;justify-content:space-around;width:400px">
-    		<div style="max-width:40px"><img src="images/b1.jpeg" onclick="cb(this)" width='40' height='40'></div>
-    		<div style="max-width:40px"><img src="images/b2.jpeg" onclick="cb(this)" width='40' height='40'></div>
-    		<div style="max-width:40px"><img src="images/b3.jpeg" onclick="cb(this)" width='40' height='40'></div>
-    		<div style="max-width:40px"><img src="images/b4.jpeg" onclick="cb(this)" width='40' height='40'></div>
-    		<div style="max-width:40px"><img src="images/b5.jpeg" onclick="cb(this)" width='40' height='40'></div>
-    		<div style="max-width:40px"><img src="images/b6.jpeg" onclick="cb(this)" width='40' height='40'></div>
-    		<div style="max-width:40px"><img src="images/b7.jpeg" onclick="cb(this)" width='40' height='40'></div>
-    		<div style="max-width:40px"><img src="images/b8.jpeg" onclick="cb(this)" width='40' height='40'></div>
-    		<div style="max-width:40px"><img src="images/b9.jpeg" onclick="cb(this)" width='40' height='40'></div>
-    		<div style="max-width:40px"><img src="images/b10.jpeg" onclick="cb(this)" width='40' height='40'></div>
-    		<div style="max-width:40px"><img src="images/b11.jpeg" onclick="cb(this)" width='40' height='40'></div>
-    		<div style="max-width:40px"><img src="images/b12.jpeg" onclick="cb(this)" width='40' height='40'></div>
-    		<div style="max-width:40px"><img src="images/b13.jpeg" onclick="cb(this)" width='40' height='40'></div>
-    		<div style="max-width:40px"><img src="images/b14.jpeg" onclick="cb(this)" width='40' height='40'></div>
-    		<div style="max-width:40px"><img src="images/b15.jpeg" onclick="cb(this)" width='40' height='40'></div>
-    		<div style="max-width:40px"><img src="images/b16.jpeg" onclick="cb(this)" width='40' height='40'></div>
-    		<div style="max-width:40px"><img src="images/b17.jpeg" onclick="cb(this)" width='40' height='40'></div>
-    		<div style="max-width:40px"><img src="images/b18.jpeg" onclick="cb(this)" width='40' height='40'></div>
-    		<div style="max-width:40px"><img src="images/b19.jpeg" onclick="cb(this)" width='40' height='40'></div>
-    		<div style="max-width:40px"><img src="images/b20.jpeg" onclick="cb(this)" width='40' height='40'></div>
-    		<div style="max-width:40px"><img src="images/b21.jpeg" onclick="cb(this)" width='40' height='40'></div>
-    		<div style="max-width:40px"><img src="images/b22.jpeg" onclick="cb(this)" width='40' height='40'></div>
-    		<div style="max-width:40px"><img src="images/b23.jpeg" onclick="cb(this)" width='40' height='40'></div>
-    		<div style="max-width:40px"><img src="images/b24.jpeg" onclick="cb(this)" width='40' height='40'></div>
-    		<div style="max-width:40px"><img src="images/b25.jpeg" onclick="cb(this)" width='40' height='40'></div>
-    		<div style="max-width:40px"><img src="images/b26.png" onclick="cb(this)" width='40' height='40'></div>
-    		<div style="max-width:40px"><img src="images/b27.jpeg" onclick="cb(this)" width='40' height='40'></div>
-    		<div style="max-width:40px"><img src="images/b28.jpeg" onclick="cb(this)" width='40' height='40'></div>
-    		<div style="max-width:40px"><img src="images/b29.png" onclick="cb(this)" width='40' height='40'></div>
-    		<div style="max-width:40px"><img src="images/b30.jpg" onclick="cb(this)" width='40' height='40'></div>
-    	</div>
-    	 </div>    	
-    	<div class='w3-center w3-green'>    		
-    		2.Background-filter<br>
-    		<div style="text-align:justify;">
-    		   	<div style='background:green;'>1.Brightness&nbsp;&nbsp;(<span id='brightness-b'></span>)&nbsp;<br>
-			<input type='range' id='rb1' min='0' max='200' value='100' onchange='updateBFilters();$("#brightness-b").text(this.value+"%");'><br></div>
-			<div style='background:red;'>2.contrast&nbsp;&nbsp;(<span id='contrast-b'></span>)&nbsp;&nbsp;<br>
-			<input type='range' id='rb2' min='0' max='210' value='100' onchange='updateBFilters();$("#contrast").text(this.value+"%");'><br></div>
-			<div style='background:green;'>3.saturate&nbsp;&nbsp;(<span id='saturate-b'></span>)&nbsp;&nbsp;<br>
-			<input type='range' id='rb3' min='0' max='300' value='100' onchange='updateBFilters();$("#saturate-b").text(this.value+"%");'><br></div>
-			<div style='background:red;'>4.hue-rotate&nbsp;&nbsp;(<span id='hue-rotate-b'></span>)&nbsp;&nbsp;<br>
-			<input type='range' id='rb4' min='0' max='360' value='0' onchange='updateBFilters();$("#hue-rotate-b").text(this.value+"deg");'><br></div>
-			<div style='background:green;'>5.sepia&nbsp;&nbsp;(<span id='sepia-b'></span>)&nbsp;&nbsp;<br>
-			<input type='range' id='rb5' min='0' max='200'  value='0' onchange='updateBFilters();$("#sepia-b").text(this.value+"%");'><br></div>			
-			<div style='background:green;'>6.invert&nbsp;&nbsp;(<span id='invert-b'></span>)&nbsp;&nbsp;<br>
-			<input type='range' id='rb6' min='0' max='200' value='0' onchange='updateBFilters();$("#invert-b").text(this.value+"%");'><br></div>
-			<div style='background:red;'>7.grayscale&nbsp;&nbsp;(<span id='grayscale-b'></span>)&nbsp;&nbsp;<br>
-			<input type='range' id='rb7' min='0' max='200' value='0' onchange='updateBFilters();$("#grayscale-b").text(this.value+"%");'><br></div>
-			<div style='background:green;'>8.Blur&nbsp;&nbsp;(<span id='Blur-b'></span>)&nbsp;&nbsp;<br>
-			<input type='range' id='rb8' min='0' max='12' value='0' onchange='updateBFilters();$("#Blur-b").text(this.value+"px");'><br></div><span style="color:green" class="w3-yellow"><b>Tips:-</b>Change opacity value<br> of original photo</span>
-    	</div>
-    </div>
- </div>
-	<div style='display:flex;flex-wrap:wrap;flex-direction:row;justify-content: space-around;' id="toolswrap">
-		<div class='tools item hidden w3-animate-left' style='text-align:justify;padding-top:50px;'>
-			<div style='background:green;'>1.Brightness&nbsp;&nbsp;(<span id='brightness'></span>)&nbsp;<br>
-			<input type='range' id='r1' min='0' max='200' value='100' onchange='updateFilters();$("#brightness").text(this.value+"%");'><br></div>
-			<div style='background:red;'>2.contrast&nbsp;&nbsp;(<span id='contrast'></span>)&nbsp;&nbsp;<br>
-			<input type='range' id='r2' min='0' max='210' value='100' onchange='updateFilters();$("#contrast").text(this.value+"%");'><br></div>
-			<div style='background:green;'>3.saturate&nbsp;&nbsp;(<span id='saturate'></span>)&nbsp;&nbsp;<br>
-			<input type='range' id='r3' min='0' max='300' value='100' onchange='updateFilters();$("#saturate").text(this.value+"%");'><br></div>
-			<div style='background:red;'>4.hue-rotate&nbsp;&nbsp;(<span id='hue-rotate'></span>)&nbsp;&nbsp;<br>
-			<input type='range' id='r4' min='0' max='360' value='0' onchange='updateFilters();$("#hue-rotate").text(this.value+"deg");'><br></div>
-			<div style='background:green;'>5.sepia&nbsp;&nbsp;(<span id='sepia'></span>)&nbsp;&nbsp;<br>
-			<input type='range' id='r5' min='0' max='200'  value='0' onchange='updateFilters();$("#sepia").text(this.value+"%");'><br></div>
-			<div style='background:red;'>6.opacity&nbsp;&nbsp;(<span id='opacity'></span>)&nbsp;&nbsp;<br>
-			<input type='range' id='r6' min='0' max='100' value='100' onchange='updateFilters();$("#opacity").text(this.value+"%");'><br></div>
-			<div style='background:green;'>7.invert&nbsp;&nbsp;(<span id='invert'></span>)&nbsp;&nbsp;<br>
-			<input type='range' id='r7' min='0' max='200' value='0' onchange='updateFilters();$("#invert").text(this.value+"%");'><br></div>
-			<div style='background:red;'>8.grayscale&nbsp;&nbsp;(<span id='grayscale'></span>)&nbsp;&nbsp;<br>
-			<input type='range' id='r8' min='0' max='200' value='0' onchange='updateFilters();$("#grayscale").text(this.value+"%");'><br></div>
-			<div style='background:green;'>9.Blur&nbsp;&nbsp;(<span id='Blur'></span>)&nbsp;&nbsp;<br>
-			<input type='range' id='r9' min='0' max='12' value='0' onchange='updateFilters();$("#Blur").text(this.value+"px");'><br></div>
-
-</div>
-	<div class='input item w3-animate-zoom' id='inp'style='display:flex;align-content: center;flex-wrap:wrap;'>
-		<img class='drag-n-drop item default' title='you may upload using the upload button' src='images/icon.gif' style='margin:auto;'><br>
-		<label for="file-upload" class="custom-file-upload default" title='click to upload image/video' >
-    	<i class="fa fa-cloud-upload"></i> Image/video Upload<i class="fa fa-cloud-upload"></i>
-    	</label>
-    	<canvas class='hidden'></canvas>
-		<input id="file-upload" type="file" onchange='handleUpload(this)'/>
-	</div>
- 
-     
-    <div class='tools2 item hidden w3-animate-right' style='text-align:justify;padding-top:50px;'>
-    	<div style='background:yellow;'>&nbsp;&nbsp;&nbsp;&nbsp;1.Adjust frame-size:<br></div><div style='background:violet;'>
-    	&nbsp;&nbsp;&nbsp;&nbsp;Width&nbsp;&nbsp;(<span id='width'></span>)&nbsp;&nbsp;<br>
-    	&nbsp;&nbsp;&nbsp;&nbsp;<input type='range' id='f1' min='0' max='100' onchange='scale();$("#width").text(this.value+"%");'><br></div><div style='background:purple;'>
-    	&nbsp;&nbsp;&nbsp;&nbsp;Height&nbsp;&nbsp;(<span id='height'></span>)&nbsp;&nbsp;<br>
-    	&nbsp;&nbsp;&nbsp;&nbsp;<input type='range' id='f2' min='0' max='100' onchange='scale();$("#height").text(this.value+"%");'><br></div><div style='background:yellow;'>
-    	&nbsp;&nbsp;&nbsp;&nbsp;2.Adjust position:<br></div><div style='background:violet;'>
-    	&nbsp;&nbsp;&nbsp;&nbsp;Left:&nbsp;&nbsp;(<span id='crop-l'></span>)&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;<input type='range' id='c1' min='0' max='100' value='0' onchange='crop();$("#crop-l").text(this.value+"%");'><br></div><div style='background: purple;'>
-    	&nbsp;&nbsp;&nbsp;&nbsp;Right:&nbsp;&nbsp;(<span id='crop-r'></span>)&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;<input type='range' id='c2' min='0' max='100' value='0' onchange='crop();$("#crop-r").text(this.value+"%");'><br></div><div style='background:violet;'>
-    	&nbsp;&nbsp;&nbsp;&nbsp;Top:&nbsp;&nbsp;(<span id='crop-t'></span>)&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;<input type='range' id='c3' min='0' max='100' value='0' onchange='crop();$("#crop-t").text(this.value+"%");'><br></div><div style='background:purple;'>
-    	&nbsp;&nbsp;&nbsp;&nbsp;Bottom:&nbsp;&nbsp;(<span id='crop-b'></span>)&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;<input type='range' id='c4' min='0' max='100' value='0' onchange='crop();$("#crop-b").text(this.value+"%");'><br></div>
-</div>
-   
-</div>
-</div>
-<audio autoplay loop src="fav.mp3"></audio>
-</body>
-<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script type="text/javascript">
-	$('#brightness').text(100+'%');
-	if(screen.availWidth<1000)
-	$('#shortcut').css('width',screen.availWidth+'px');
-	$('#shortcut').hide();
-	$('#f1').val(100);
-	$('#f2').val(100);
-	$('#width').text(100+'%');
-	$('#height').text(100+'%');
-	$('#crop-r').text(0+'%');
-	$('#crop-t').text(0+'%');
-	$('#crop-l').text(0+'%');
-	$('#crop-b').text(0+'%');
-	$('#c1').val(0);
-	$('#c2').val(0);
-	$('#c3').val(0);
-	$('#c4').val(0);
-	$('#r1').val(100);
-	$('#contrast').text(100+'%');
-	$('#r2').val(100);
-	$('#saturate').text(100+'%');
-	$('#r3').val(100);
-	$('#hue-rotate').text(0+'deg');
-	$('#r4').val(0);
-	$('#sepia').text(0+'%');
-	$('#r5').val(0);
-	$('#opacity').text(100+'%');
-	$('#r6').val(100);
-	$('#invert').text(0+'%');
-	$('#r7').val(0);
-	$('#grayscale').text(0+'%');
-	$('#r8').val(0);
-	$('#Blur').text(0+'px');
-	$('#r9').val(0);
-	$('#brightness-b').text(100+'%');
- 	$('#rb1').val(100);
-	$('#contrast-b').text(100+'%');
-	$('#rb2').val(100);
-	$('#saturate-b').text(100+'%');
-	$('#rb3').val(100);
-	$('#hue-rotate-b').text(0+'deg');
-	$('#rb4').val(0);
-	$('#sepia-b').text(0+'%');
-	$('#rb5').val(0);				
-	$('#invert-b').text(0+'%');
-	$('#rb6').val(0);
-	$('#grayscale-b').text(0+'%');
-	$('#rb7').val(0);
-	$('#Blur-b').text(0+'px');
-	$('#rb8').val(0);
-	function checkCookie(){
-
-	}
-	$('label').css('width',($('.drag-n-drop').width()+20)+'px');
-	function removeBackground(){}
-		var file=null,file2=null ;
-		var w,h;
-		var l=0,r=0,t=0,b=0;
-		var slide_index = 0;
-		var option2 = document.querySelectorAll('#filterContent div');
-		function moveSlide(e){
-  			var effects = ['Normal','cool B&W','bright','Normal B&W','Summer','clear','21s hero','1900s hero','unique','villian','labour','Aden','Amaro','Junotic','pro','perpetua','maven','hefe','crema','patch'];
-  			var filters = ['brightness(100%) contrast(100%) saturate(100%) grayscale(0%) hue-rotate(0deg) sepia(0) invert(0%)',
-  			'brightness(137%) contrast(101%) saturate(146%) grayscale(83%) hue-rotate(51deg)',
-  			'brightness(123%) contrast(117%)',
-  			'brightness(112%) contrast(101%) saturate(146%) grayscale(83%) hue-rotate(144deg) invert(6%) sepia(71%)',
-  			'brightness(127%) contrast(101%) saturate(142%) hue-rotate(38deg)',
-  			'brightness(105%) contrast(160%) saturate(288%) grayscale(65%) hue-rotate(30deg) sepia(19%)',
-  			'sepia(50%) hue-rotate(330deg) saturate(140%)',
-  			'brightness(127%) contrast(117%) saturate(10%) grayscale(65%) hue-rotate(51deg)',
-  			'brightness(104%) contrast(203%) saturate(77%) invert(7%) sepia(46%)',
-  			'brightness(104%) contrast(159%) saturate(118%) grayscale(73%) hue-rotate(174deg) invert(15%) sepia(78%)',
-  			'brightness(77%) contrast(113%) saturate(239%) grayscale(22%) hue-rotate(9deg)',
-  			'sepia(20%) brightness(115%) saturate(140%)',
-  			'sepia(35%) contrast(110%) brightness(120%) saturate(130%)',
-  			'sepia(35%) contrast(115%) brightness(115%) saturate(180%)',
-  			'sepia(45%) contrast(125%) brightness(175%) saturate(130%) hue-rotate(355deg)',
-  			'contrast(110%) brightness(125%) saturate(110%)',
-  			'sepia(35%) contrast(105%) brightness(105%) saturate(175%)',
-  			'sepia(40%) contrast(150%) brightness(120%) saturate(140%) hue-rotate(350deg)',
-  			'sepia(50%) contrast(125%) brightness(115%) saturate(90%) hue-rotate(358deg)',
-  			'sepia(35%) saturate(110%) contrast(150%)']; 
-  			for(x of option2)
-  				x.style.display='none';  
-  			if(e==-1&&slide_index==0)
-   				slide_index = (option2.length -1)
- 			else if(e==-1)
- 				slide_index--;
- 			if(e==1&&slide_index==option2.length-1)
- 				slide_index = 0;
- 			else if(e==1)
- 				slide_index = slide_index + 1;
- 			$("#filter-name").text(effects[slide_index]);
- 			option2[slide_index].style.display='block';
- 			let data = filters[slide_index];
- 			ApplyFilters(data);
- 			let f = filters[slide_index].split(' ');
- 			let i1=100,i2=100,i3=0,i4=0,i5=$('#r6').val(),i6=0,i7=0,i8=100,i9=0; 
- 			f.forEach(function(item){if(item.includes('brightness(')){i1 = item.match(/(\d+)/);i1 = Number(i1[0]);}if(item.includes('contrast(')){i2 = item.match(/(\d+)/);i2 = Number(i2[0]);}if(item.includes('sepia(')){i3 = item.match(/(\d+)/);i3 = Number(i3[0]);}if(item.includes('grayscale(')){i4 = item.match(/(\d+)/);i4 = Number(i4[0]);}if(item.includes('opacity(')){i5 = item.match(/(\d+)/);i5 = Number(i5[0]);}if(item.includes('hue-rotate(')){i6 = item.match(/(\d+)/);i6 = Number(i6[0]);}if(item.includes('invert(')){i7 = item.match(/(\d+)/);i7 = Number(i7[0]);}if(item.includes('saturate(')){i8 = item.match(/(\d+)/);i8 = Number(i8[0]);}if(item.includes('blur(')){i9 = item.match(/(\d+)/);i9 = Number(i9[0]);}});
- 				$('#brightness').text(i1+'%');
- 				$('#r1').val(i1);
-				$('#contrast').text(i2+'%');
-				$('#r2').val(i2);
-				$('#saturate').text(i8+'%');
-				$('#r3').val(i8);
-				$('#hue-rotate').text(i6+'deg');
-				$('#r4').val(i6);
-				$('#sepia').text(i3+'%');
-				$('#r5').val(i3);
-				$('#opacity').text(i5+'%');
-				$('#r6').val(i5);
-				$('#invert').text(i7+'%');
-				$('#r7').val(i7);
-				$('#grayscale').text(i4+'%');
-				$('#r8').val(i4);
-				$('#Blur').text(i9+'px');
-				$('#r9').val(i9);				
-	
-}
-	let canvas = document.getElementsByTagName('canvas')[0];
-    let ctx = canvas.getContext('2d');
-    let prev_filter ="brightness(100%) contrast(100%) saturate(100%) grayscale(0%) hue-rotate(0deg) sepia(0) invert(0%)";
-    let bgfilter ='opacity(1)';
-	function ApplyFilters(data){
-		    ctx.clearRect(0,0,canvas.width,canvas.height);
-		    r = $('#c2').val()*canvas.width/100;
-          	l = $('#c1').val()*canvas.width/100;
-          	t = $('#c3').val()*canvas.height/100;
-          	b = $('#c4').val()*canvas.height/100;
-          	let bg = new Image(w,h);
-          	bg.onload = function(){
-          		ctx.filter = bgfilter;
-          		ctx.drawImage(this,0,0,w,h);
-          	}
-          	bg.src = file2;
-			let image = new Image(w,h); 
-			image.onload = drawimage;
-			image.src = file;
-			function drawimage(){
-	    	    ctx.filter = data+" opacity("+$('#r6').val()+"%)";
-	    	    prev_filter = data+" opacity("+$('#r6').val()+"%)";
-  				ctx.drawImage(this, -l, -t, canvas.width+l+r, canvas.height+t+b);
-  			}			
-	}
-	function cb(e){
-		file2 = e.src;
-		ApplyFilters(prev_filter);								
-		$('#r6').val(50);
-		$('#opacity').text(50+'%');
-	}
-	function scale(){
-          ctx.clearRect(0,0,canvas.width,canvas.height);
-          canvas.width = w*$('#f1').val()/100;
-          canvas.height = h*$('#f2').val()/100;
-          r = $('#c2').val()*canvas.width/100;
-          l = $('#c1').val()*canvas.width/100;
-          t = $('#c3').val()*canvas.height/100;
-          b = $('#c4').val()*canvas.height/100;
-          let bg = new Image(w,h);
-          	bg.onload = function(){
-          		ctx.filter = bgfilter;
-          		ctx.drawImage(this,0,0,w,h);
-          	}
-          	bg.src = file2;
-          let image = new Image(w,h);          
-          image.onload = drawimage;
-          image.src = file;
-          function drawimage(){
-	    	    ctx.filter = prev_filter+ ' opacity('+$('#r6').val()+'%)';
-	    	    ctx.drawImage(image, -l, -t, canvas.width+l+r, canvas.height+t+b);
-  			}
-	}
-	function removeBg(){
-		file2 = null;		
-		$('#r6').val(100);
-		$('#opacity').text(100+'%');
-		ApplyFilters(prev_filter);
-	}	
-    function crop(){
-    	ctx.clearRect(0,0,canvas.width,canvas.height);
-          canvas.width = w*$('#f1').val()/100;
-          canvas.height = h*$('#f2').val()/100;
-          r = $('#c2').val()*canvas.width/100;
-          l = $('#c1').val()*canvas.width/100;
-          t = $('#c3').val()*canvas.height/100;
-          b = $('#c4').val()*canvas.height/100;
-          let bg = new Image(w,h);
-          	bg.onload = function(){
-          		ctx.filter = 'opacity(1)';
-          		ctx.drawImage(this,0,0,w,h);
-          	}
-          	bg.src = file2;
-          let image = new Image(w,h);          
-          image.onload = drawimage;
-          image.src = file;
-          function drawimage(){
-	    	    ctx.filter = prev_filter + ' opacity('+$('#r6').val()+'%)';
-	    	    ctx.drawImage(image, -l, -t, canvas.width+l+r, canvas.height+t+b);
-  			}
-	}
-
-	function updateFilters(){
-		var dat = "brightness("+$('#r1').val()/100+') contrast('+$('#r2').val()/100+') saturate('+$('#r3').val()/100+') hue-rotate('+$('#r4').val()+'deg) sepia('+$('#r5').val()/100+') opacity('+$('#r6').val()/100+') invert('+$('#r7').val()/100+') grayscale('+$('#r8').val()/100+') blur('+$('#r9').val()+'px)';
-      ApplyFilters(dat);
- }
- function updateBFilters(){
- 	if(file2){
- 	 bgfilter = "brightness("+$('#rb1').val()/100+') contrast('+$('#rb2').val()/100+') saturate('+$('#rb3').val()/100+') hue-rotate('+$('#rb4').val()+'deg) sepia('+$('#rb5').val()/100+') invert('+$('#rb6').val()/100+') grayscale('+$('#rb7').val()/100+') blur('+$('#rb8').val()+'px)';
- 	 ctx.clearRect(0,0,canvas.width,canvas.height);
-		    r = $('#c2').val()*canvas.width/100;
-          	l = $('#c1').val()*canvas.width/100;
-          	t = $('#c3').val()*canvas.height/100;
-          	b = $('#c4').val()*canvas.height/100;
-          	let bg = new Image(w,h);
-          	bg.onload = function(){
-          		ctx.filter = bgfilter;
-          		ctx.drawImage(this,0,0,w,h);
-          	}
-          	bg.src = file2;
-			let image = new Image(w,h); 
-			image.onload = drawimage;
-			image.src = file;
-			function drawimage(){
-	    	    ctx.filter = prev_filter+" opacity("+$('#r6').val()+"%)";	    	    
-  				ctx.drawImage(this, -l, -t, canvas.width+l+r, canvas.height+t+b);
-  			}
-  		}
- }
-	function handleUpload(e){
-	   let x = window.matchMedia('max-width:500px');
-	   document.getElementsByTagName('audio')[0].play();
-       let fReader = new FileReader();
-	   fReader.readAsDataURL(e.files[0]);
-	   fReader.onloadend = function(event){
-	   	       let ratX,ratY;
-			   let s = (event.target.result.split(';')[0]).split('/');
-				let ext = s[s.length-1].toLowerCase();
-				if(ext=='jpg'||ext=='jpeg'||ext=='png'){
-					$('.default').hide();
-					$('.hidden').show();
-					$('.input').css('padding-top','50px');
-  					let canvas = document.getElementsByTagName('canvas')[0];
-					let ctx = canvas.getContext('2d');
-
-					if(x.matches){
-  					canvas.width = screen.availWidth;
-  					canvas.height = 400;
-  				}
-  				else{
-  					canvas.width = $('#inp').width();
-  					canvas.height = 500;
-  				}
-					let image = new Image(canvas.width,canvas.height); 
-					image.onload = drawimage;
-					image.src = event.target.result ;
-                    file = event.target.result;
-				function drawimage() {	 				
-  				w = canvas.width;
-  				h = canvas.height;
-  				ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-    		}
-    		
-    	}
-    		else if(ext=='gif'||ext=='webp'){
-    			$('.default').hide();
-    			let img = document.createElement('img');
-    			img.src = event.target.result;
-    			let w = (x.matches)?(screen.availWidth):500;
-                let h = (x.matches)?400:500;                
-    			$('.input').append(img).css('width',w+'px').css('height',h+'px').css('display','flex').css('align-content','center');
-    		}
-    		else if(ext=='mp4'||ext=='m4v'||ext=='avi'||ext=='mpg'||ext=='webm'){
-    			 $('.default').hide();
-    			 var video = document.createElement('video');
-    			 video.autoplay = true;
-    			// video.loop = true;
-    			 video.controls = true;
-    			 video.setAttribute('src',event.target.result);
-    			 let w = (x.matches)?(screen.availWidth):500;
-                 let h = (x.matches)?450:500;
-                 $('.input').append(video).css('width',w+'px').css('height',h+'px').css('display','flex').css('align-content','center');
-                 $('.input').css('padding-top','200px');
-    		}
-    		else{
-    			alert("invalid file-type!");
-    		}		
-    }
-}
-function download(){
-	var a = document.createElement('a');
-	document.body.appendChild(a);
-	a.href = canvas.toDataURL('image/png');
-	a.download = 'image.png';
-	a.click();
-}	
-function reset(){
-	if(confirm('Are you sure to leave?'))
-	window.location.reload();
-}
-function Addbg(e){
-	let fread = new FileReader();
-	fread.readAsDataURL(e.files[0]);
-	fread.onloadend = function(ev){
-		let s = (ev.target.result.split(';')[0]).split('/');
-		s= s[s.length-1].toLowerCase();
-		if(s=='jpg'||s=='jpeg'||s=='png'||s=='gif'){
-			ctx.clearRect(0,0,canvas.width,canvas.height);
-			r = $('#c2').val()*canvas.width/100;
-          	l = $('#c1').val()*canvas.width/100;
-          	t = $('#c3').val()*canvas.height/100;
-          	b = $('#c4').val()*canvas.height/100;
-			let image = new Image(w,h); 
-			image.onload = drawImage;
-			image.src = ev.target.result ;			
-			let Im2 = new Image(w,h);
-			Im2.onload = function(){						   	
-				ctx.filter = prev_filter + ' opacity(0.5)';							
-				$('#r6').val(50);
-				$('#opacity').text(50+'%');
-				ctx.drawImage(this,-l,-r,canvas.width+l+r,canvas.height+l+r);
-			}
-			Im2.src = file;
-			function drawImage(){
-				ctx.filter = bgfilter;
-				ctx.drawImage(this,0,0,w,h);
-				file2 = ev.target.result;
-			}
-		}
-
-	}
-}
-</script>
-
+      
+      }
+      }
+   </script>
 </html>
+
