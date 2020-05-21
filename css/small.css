@@ -12,7 +12,8 @@
 	z-index:20000;
 }
 canvas{
-	max-width: 100vw;	
+	width: 100vw;
+	height:60vh;	
 }
 #filterContent img{
 	width:50vw;
@@ -21,15 +22,13 @@ canvas{
 #tools{
 	width:100vw;
 	order:1;
-	display:flex;
-	visibility:hidden;	
+	display:none;	
   	overflow:scroll;
 }
 #tools2{
 	width:100vw;
 	order:2;
-	display:flex;
-	visibility:hidden;		
+	display:none;			
     overflow:scroll;
 }
 #inp{
