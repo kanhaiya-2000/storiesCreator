@@ -46,6 +46,11 @@
 #custom{
 	width:300px;
 }
+canvas{
+	width:40vw;
+	height:500px;
+	display:none;
+}
 #shortcut{
 	width:360px;
 }
