@@ -74,7 +74,7 @@
 </head>
 <body onload='checkCookie()'>
    <div id="containt">
-   <div id='shortcut' class='hidden w3-animate-zoom' style='display:flex;flex-wrap:nowrap;position:sticky;top:20px;margin:auto;width:360px;justify-content: space-between;font-size:25px;'><i class='fa fa-plus ' title='advanced edit' onclick='if($("#adv").is(":hidden")){$("#adv").css("display","flex");$("#adv").css("left","calc(50% - "+$("#adv").width()/2+"px)");this.className = "fa fa-times";$(this).attr("title","Close");}else{$("#adv").hide();this.className = "fa fa-plus";$(this).attr("title","Advanced edit");}'></i><i class='fa fa-download' title='download this photo' onclick='download()'></i><i class='fa fa-upload' title='upload-to-your-story' onclick=''></i><i class='fa fa-arrow-left' title='Quit'  onclick='reset()'></i></div>
+   <div id='shortcut' class='hidden w3-animate-zoom' style='display:flex;flex-wrap:nowrap;position:sticky;top:20px;z-index:2000;margin:auto;width:360px;justify-content: space-between;font-size:32px;'><i class='fa fa-plus ' title='advanced edit' onclick='if($("#adv").is(":hidden")){$("#adv").css("display","flex");$("#adv").css("left","calc(50% - "+$("#adv").width()/2+"px)");this.className = "fa fa-times";$(this).attr("title","Close");}else{$("#adv").hide();this.className = "fa fa-plus";$(this).attr("title","Advanced edit");}'></i><i class='fa fa-download' title='download this photo' onclick='download()'></i><i class='fa fa-upload' title='upload-to-your-story' onclick=''></i><i class='fa fa-arrow-left' title='Quit'  onclick='reset()'></i></div>
     <div class='w3-animate-zoom w3-center w3-large' id='adv' style='display:none;position:fixed;flex-wrap:wrap;cursor:pointer;align-content:center;justify-content:space-around;bottom:10px;scrollbar-width:thin'>
       <div id='custom' class='w3-center w3-green '>        
          <div style="display:flex;flex-wrap:nowrap;">
@@ -108,7 +108,7 @@
          <label for="bg-upload" class="custom-file-upload w3-circle" title='click to upload image'>
          <i class="fa fa-cloud-upload w3-circle w3-btn"></i>
          </label><label><i class='w3-btn w3-red w3-circle fa fa-close' onclick='removeBg()' title='Remove background'></i></label>
-         <input id="bg-upload" type="file" onchange='Addbg(this)'/></div>
+         <input id="bg-upload" accept="image/*" type="file" onchange='Addbg(this)'/></div>
        </div>     
       <div>          
          2.Background-filter<br>
@@ -160,7 +160,7 @@
       <i class="fa fa-cloud-upload"></i> Image Upload<i class="fa fa-cloud-upload"></i>
       </label>
       <canvas class='hidden'></canvas>
-      <input id="file-upload" type="file" onchange='handleUpload(this)'/>
+      <input id="file-upload" type="file" accept="image/*" onchange='handleUpload(this)'/>
    </div>
  
      
