@@ -429,17 +429,18 @@
 
                if(x.matches){
                canvas.width = screen.availWidth;
-               canvas.height = 400;
+               //canvas.height = 400;
             }
             else{
                canvas.width = $('#inp').width();
-               canvas.height = 500;
+              // canvas.height = 500;
             }
-               let image = new Image(canvas.width,canvas.height); 
+               let image = new Image(); 
                image.onload = drawimage;
                image.src = event.target.result ;
                     file = event.target.result;
-            function drawimage() {              
+            function drawimage() {
+            canvas.height = image.naturalHeight*canvas.width/image.naturalHeight ;
             w = canvas.width;
             h = canvas.height;
             ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
