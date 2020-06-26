@@ -440,7 +440,7 @@
                image.src = event.target.result ;
                     file = event.target.result;
             function drawimage() {
-            canvas.height = image.naturalHeight*canvas.width/image.naturalWidth ;
+            canvas.height = image.height*canvas.width/image.width ;
             w = canvas.width;
             h = canvas.height;
             ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
