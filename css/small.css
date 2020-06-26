@@ -11,10 +11,6 @@
     width:100vw;
 	z-index:20000;
 }
-canvas{
-	width: 100vw;
-	height:60vh;	
-}
 #filterContent img{
 	width:50vw;
 	height:20vh;
